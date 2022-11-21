@@ -17,6 +17,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletContext;
+import javax.validation.constraints.Min;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -39,9 +44,15 @@ public class EmailRestController {
     }
 
     @GetMapping("/email")
-    public Page<Email> all(@SortDefault.SortDefaults({@SortDefault(sort = DEFAULT_SORT_PROPERTY, direction = Sort.Direction.DESC)}) Pageable pageable) 
+    public Page<Email> all(@RequestParam Optional<String> toAddress,
+                           @SortDefault.SortDefaults({@SortDefault(sort = DEFAULT_SORT_PROPERTY, direction = Sort.Direction.DESC)}) Pageable pageable) 
     {
-        return emailRepository.findAll(pageable);
+        Page<Email> result = Page.empty();
+        if (toAddress.isPresent())
+            result = emailRepository.findByToAddress(toAddress.get(), pageRequest);
+        else
+            result = emailRepository.findAll(pageRequest);
+        return result;
     }
 
     @GetMapping("/email/{id}")
