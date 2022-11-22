@@ -65,10 +65,13 @@ class EmailRestControllerTest {
         var email = Optional.of("receiver@test.com");
         when(emailRepository.findByToAddress(eq(email.get()), any(Pageable.class))).thenReturn(page);
 
-        var result = sut.all(email, 0, 5, Sort.Direction.DESC);
+        var pageable = PageRequest.of(0, 5, Sort.Direction.DESC, "receivedOn");
+        var result = sut.all(email, pageable);
 
-        assertEquals(page.getContent(), result);
-        verify(emailRepository).findByToAddress(eq(email.get()), argThat(matchPageable(0, 5)));
+        ArgumentCaptor<Pageable> pageableCaptor = ArgumentCaptor.forClass(Pageable.class);
+        verify(emailRepository).findByToAddress(eq(email.get()), pageableCaptor.capture());
+        assertEquals(pageableCaptor.getValue(), pageable);
+        assertEquals(page, result);
         verifyNoMoreInteractions(emailRepository);
     }
 

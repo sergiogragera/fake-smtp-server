@@ -17,10 +17,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletContext;
-import javax.validation.constraints.Min;
-
-import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 @RestController

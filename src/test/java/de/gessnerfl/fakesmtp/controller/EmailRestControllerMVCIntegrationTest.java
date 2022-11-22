@@ -123,8 +123,12 @@ class EmailRestControllerMVCIntegrationTest {
         MvcResult mvcResult = this.mockMvc.perform(get(String.format("/api/email?toAddress=%s", address2))).andReturn();
 
         assertEquals(200, mvcResult.getResponse().getStatus());
-        Email[] emails = mapFromJson(mvcResult.getResponse().getContentAsString(), Email[].class);
-        assertEquals(List.of(email2), List.of(emails));
+        RestResponsePage<Email> emailPage = mapFromJson(mvcResult.getResponse().getContentAsString(), new TypeReference<RestResponsePage<Email>>() {});
+        assertEquals(0, emailPage.getNumber());
+        assertEquals(10, emailPage.getSize());
+        assertEquals(1, emailPage.getTotalPages());
+        assertEquals(1, emailPage.getTotalElements());
+        assertEquals(List.of(email2), emailPage.getContent());
     }
 
     @Test
