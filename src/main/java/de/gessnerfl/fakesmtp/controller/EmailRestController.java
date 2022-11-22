@@ -49,9 +49,9 @@ public class EmailRestController {
     {
         Page<Email> result = Page.empty();
         if (toAddress.isPresent())
-            result = emailRepository.findByToAddress(toAddress.get(), pageRequest);
+            result = emailRepository.findByToAddress(toAddress.get(), pageable);
         else
-            result = emailRepository.findAll(pageRequest);
+            result = emailRepository.findAll(pageable);
         return result;
     }
 
